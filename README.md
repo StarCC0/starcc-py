@@ -1,12 +1,14 @@
 # StarCC-Py
 
-Python implementation of StarCC
+简繁转换 簡繁轉換 Simplified-Traditional Chinese conversion framework
+
+[![Discuss - on Telegram](https://img.shields.io/badge/Discussion-on_Telegram-2ca5e0?logo=telegram)](https://t.me/+jOyC1UnIqZE3OGQ1)
+
+## 用法 Usage
 
 ```sh
 pip install starcc
 ```
-
-## 用法 Usage
 
 ```python
 from StarCC import Conversion, Dicts
