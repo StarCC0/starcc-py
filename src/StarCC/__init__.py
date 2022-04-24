@@ -1,5 +1,7 @@
-import os
+from os import path
 import pygtrie
+
+here = path.abspath(path.dirname(__file__))
 
 class Dicts:
     CN2ST = ('STCharacters', 'STPhrases')
@@ -18,9 +20,9 @@ def _dicts2trie(dicts):
     trie = pygtrie.CharTrie()
 
     for filename in dicts:
-        if not os.path.exists(filename):
-            filename_ = f'dict/{filename}.txt'
-            if os.path.exists(filename_):
+        if not path.exists(filename):
+            filename_ = path.join(here, 'dict', f'{filename}.txt')
+            if path.exists(filename_):
                 filename = filename_
             else:
                 raise ValueError(f'Dictionary file {filename} is not accessible')
@@ -65,12 +67,7 @@ class Conversion:
     def __init__(self, dicts_list) -> None:
         self.tries = [_dicts2trie(dicts) for dicts in dicts_list]
 
-
     def __call__(self, s: str) -> str:
         for trie in self.tries:
             s = _convert(trie, s)
         return s
-
-convert = Conversion((Dicts.CN2ST, Dicts.ST2TWP))
-
-print(convert('为什么你在床里面睡着？我们的硅二极管坏了，要去老挝修理。'))

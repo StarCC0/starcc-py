@@ -1,1 +1,6 @@
-/dict
+build
+dist
+*.egg-info
+.mypy_cache
+
+/src/StarCC/dict
