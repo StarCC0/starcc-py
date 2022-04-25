@@ -71,3 +71,47 @@ class Conversion:
         for trie in self.tries:
             s = _convert(trie, s)
         return s
+
+class PresetConversion(Conversion):
+    def __init__(self, src='cn', dst='hk', with_phrase: bool=False) -> None:
+        if src not in ('st', 'cn', 'hk', 'tw', 'jp'):
+            raise ValueError(f'Invalid src value: {src}')
+        if dst not in ('st', 'cn', 'hk', 'tw', 'jp'):
+            raise ValueError(f'Invalid dst value: {dst}')
+        assert src != dst
+
+        dicts_list = []
+
+        if src != 'st':
+            if not with_phrase:
+                dicts_list.append({
+                    'cn': Dicts.CN2ST,
+                    'hk': Dicts.HK2ST,
+                    'tw': Dicts.TW2ST,
+                    'jp': Dicts.JP2ST,
+                }[src])
+            else:  # with_phrase
+                if src not in ('cn', 'tw'):
+                    raise ValueError(f'Phrase conversion for {src} is currently not supported')
+                dicts_list.append({
+                    'cn': Dicts.CN2ST,  # CN does not need to convert phrases
+                    'tw': Dicts.TWP2ST,
+                }[src])
+
+        if dst != 'st':
+            if not with_phrase:
+                dicts_list.append({
+                    'cn': Dicts.ST2CN,
+                    'hk': Dicts.ST2HK,
+                    'tw': Dicts.ST2TW,
+                    'jp': Dicts.ST2JP,
+                }[dst])
+            else:  # with_phrase
+                if src not in ('cn', 'tw'):
+                    raise ValueError(f'Phrase conversion for {src} is currently not supported')
+                dicts_list.append({
+                    'cn': Dicts.ST2CN,  # CN does not need to convert phrases
+                    'tw': Dicts.ST2TWP,
+                }[dst])
+
+        super().__init__(dicts_list)
