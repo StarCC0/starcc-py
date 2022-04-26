@@ -8,7 +8,7 @@ with open(path.join(here, 'README.md')) as f:
 
 setup(
 	name='starcc',
-	version='0.0.2',
+	version='0.0.3',
 	description='Python implementation of StarCC',
 	long_description=long_description,
 	long_description_content_type='text/markdown',
@@ -36,7 +36,7 @@ setup(
 	},
 	include_package_data=True,
 	python_requires='>=3.7, <4',
-	install_requires=['pygtrie'],
+	install_requires=['jieba', 'pygtrie'],
 	entry_points={},
 	project_urls={
 		'Bug Reports': 'https://github.com/StarCC0/StarCC/issues',

@@ -1,5 +1,7 @@
+import jieba
 from os import path
-import pygtrie
+from pygtrie import CharTrie
+from typing import Callable, Optional, Sequence
 
 here = path.abspath(path.dirname(__file__))
 
@@ -16,8 +18,8 @@ class Dicts:
     ST2TWP = ('TWVariants', 'TWPhrasesIT', 'TWPhrasesName', 'TWPhrasesOther')
     ST2JP = ('JPVariants',)
 
-def _dicts2trie(dicts):
-    trie = pygtrie.CharTrie()
+def _dicts2trie(dicts: str) -> CharTrie:
+    trie = CharTrie()
 
     for filename in dicts:
         if not path.exists(filename):
@@ -39,7 +41,7 @@ def _dicts2trie(dicts):
 
     return trie
 
-def _convert(trie, s: str) -> str:
+def _convert(trie: CharTrie, s: str) -> str:
     results = []
 
     total_len = len(s)
@@ -64,16 +66,38 @@ def _convert(trie, s: str) -> str:
     return ''.join(results)
 
 class Conversion:
-    def __init__(self, dicts_list) -> None:
+    def __init__(self, dicts_list: Sequence[str], seg_funcs: Optional[Sequence[Callable]]=None) -> None:
         self.tries = [_dicts2trie(dicts) for dicts in dicts_list]
 
+        if seg_funcs is None:
+            self.seg_funcs = [None for _ in dicts_list]
+        else:
+            if len(dicts_list) != len(seg_funcs):
+                raise ValueError('`seg_funcs` should either be `None`, or has the same length with `dicts_list`')
+            self.seg_funcs = seg_funcs
+
     def __call__(self, s: str) -> str:
-        for trie in self.tries:
-            s = _convert(trie, s)
+        for trie, seg_func in zip(self.tries, self.seg_funcs):
+            if seg_func is None:
+                s = _convert(trie, s)
+            else:
+                results = []
+                for segment in seg_func(s):
+                    segment = _convert(trie, segment)
+                    results.append(segment)
+                s = ''.join(results)
         return s
 
 class PresetConversion(Conversion):
-    def __init__(self, src='cn', dst='hk', with_phrase: bool=False) -> None:
+    def __init__(self, src: str='cn', dst: str='hk', with_phrase: bool=False, use_seg: bool=True) -> None:
+        '''
+        Initialize a `PresetConversion` object.
+
+        `use_seg` Whether to use an external segmentation tool (i.e. jieba) or not
+        when converting from Simplified to Traditional. If the conversion is not
+        from Simplified to Traditional, this option has no effect.
+        '''
+
         if src not in ('st', 'cn', 'hk', 'tw', 'jp'):
             raise ValueError(f'Invalid src value: {src}')
         if dst not in ('st', 'cn', 'hk', 'tw', 'jp'):
@@ -81,6 +105,7 @@ class PresetConversion(Conversion):
         assert src != dst
 
         dicts_list = []
+        seg_funcs = []
 
         if src != 'st':
             if not with_phrase:
@@ -98,6 +123,11 @@ class PresetConversion(Conversion):
                     'tw': Dicts.TWP2ST,
                 }[src])
 
+            if src == 'cn' and use_seg:
+                seg_funcs.append(jieba.cut)
+            else:
+                seg_funcs.append(None)
+
         if dst != 'st':
             if not with_phrase:
                 dicts_list.append({
@@ -114,4 +144,6 @@ class PresetConversion(Conversion):
                     'tw': Dicts.ST2TWP,
                 }[dst])
 
-        super().__init__(dicts_list)
+            seg_funcs.append(None)
+
+        super().__init__(dicts_list, seg_funcs)

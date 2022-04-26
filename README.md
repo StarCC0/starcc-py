@@ -52,6 +52,20 @@ print(convert('在搜尋欄位使用萬用字元。'))
 # 在搜索字段使用通配符。
 ```
 
+## 高級用法 Advanced Usage
+
+### 在簡轉繁時使用外部分詞 Use external segmentation tools when converting from Simplified to Traditional
+
+此功能已預設開啓 This function is enabled by default
+
+```python
+from StarCC import PresetConversion
+convert = PresetConversion(src='cn', dst='hk', with_phrase=False, use_seg=True)
+convert('拥有 116 年历史')  # Correct: 擁有 116 年歷史
+convert = PresetConversion(src='cn', dst='hk', with_phrase=False, use_seg=False)
+convert('拥有 116 年历史')  # Wrong: 擁有 116 年曆史
+```
+
 ## 轉換模式一覽 Supported conversion modes
 
 - `cn`: Simplified Chinese (Mainland China)
