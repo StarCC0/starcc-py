@@ -3,20 +3,9 @@ from os import path
 from pygtrie import CharTrie
 from typing import Callable, Optional, Sequence
 
+from .Dicts import Dicts
+
 here = path.abspath(path.dirname(__file__))
-
-class Dicts:
-    CN2ST = ('STCharacters', 'STPhrases')
-    TW2ST = ('TWVariantsRev', 'TWVariantsRevPhrases')
-    TWP2ST = ('TWVariantsRev', 'TWVariantsRevPhrases', 'TWPhrasesRev')
-    HK2ST = ('HKVariantsRev', 'HKVariantsRevPhrases')
-    JP2ST = ('JPVariantsRev', 'JPShinjitaiCharacters', 'JPShinjitaiPhrases')
-
-    ST2CN = ('TSCharacters', 'TSPhrases')
-    ST2HK = ('HKVariants',)
-    ST2TW = ('TWVariants',)
-    ST2TWP = ('TWVariants', 'TWPhrasesIT', 'TWPhrasesName', 'TWPhrasesOther')
-    ST2JP = ('JPVariants',)
 
 def _dicts2trie(dicts: str) -> CharTrie:
     trie = CharTrie()
@@ -64,6 +53,16 @@ def _convert(trie: CharTrie, s: str) -> str:
         results.append(result)
 
     return ''.join(results)
+
+def _jieba_add_words():
+    phrase_file = path.join(here, 'dict', 'STPhrases.txt')
+    with open(phrase_file, encoding='utf-8') as f:
+        for line in f:
+            line = line.rstrip('\n')
+
+            if line and not line.startswith('#'):
+                k, _ = line.split('\t')
+                jieba.add_word(k)
 
 class Conversion:
     def __init__(self, dicts_list: Sequence[str], seg_funcs: Optional[Sequence[Callable]]=None) -> None:
@@ -124,6 +123,7 @@ class PresetConversion(Conversion):
                 }[src])
 
             if src == 'cn' and use_seg:
+                _jieba_add_words()
                 seg_funcs.append(jieba.cut)
             else:
                 seg_funcs.append(None)

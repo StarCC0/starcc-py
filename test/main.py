@@ -31,10 +31,11 @@ def run_test(name, config):
     convert = PresetConversion(*config)
     ys_ = convert(xs)
 
-    if ys != ys_:
-        print(f'Error found in {name}\n'
-              f'Expected: {ys}\n'
-              f'Got: {ys_}\n\n')
+    for y, y_ in zip(ys.splitlines(), ys_.splitlines()):
+        if y != y_:
+            print(f'Error found in {name}\n'
+                f'Expected: {y}\n'
+                f'Got: {y_}\n\n')
 
 for test in tests:
     run_test(*test)
