@@ -12,13 +12,15 @@ pip install starcc
 
 ## 用法 Usage
 
+### 簡轉繁 Simplified to Traditional
+
 不轉換用詞 Without phrase conversion:
 
 ```python
 from StarCC import PresetConversion
-convert = PresetConversion(src='cn', dst='hk', with_phrase=False)
-print(convert('为什么你在床里面睡着？我们的硅二极管坏了，要去老挝修理。'))
-# 為什麼你在牀裏面睡着？我們的硅二極管壞了，要去老撾修理。
+convert = PresetConversion(src='cn', dst='hk', with_phrase=False)  # change to `dst='tw'` for Taiwan mode
+print(convert('阴天，山容便黯澹无聊，半隐入米家的水墨里去。'))
+# 陰天，山容便黯澹無聊，半隱入米家的水墨裏去。
 ```
 
 轉換用詞 With phrase conversion:
@@ -26,8 +28,28 @@ print(convert('为什么你在床里面睡着？我们的硅二极管坏了，�
 ```python
 from StarCC import PresetConversion
 convert = PresetConversion(src='cn', dst='tw', with_phrase=True)
-print(convert('为什么你在床里面睡着？我们的硅二极管坏了，要去老挝修理。'))
-# 為什麼你在床裡面睡著？我們的矽二極體壞了，要去寮國修理。
+print(convert('KB 大桥也被视为帕劳人的后花园。'))
+# KB 大橋也被視為帛琉人的後花園。
+```
+
+### 繁轉簡 Traditional to Simplified
+
+不轉換用詞 Without phrase conversion:
+
+```python
+from StarCC import PresetConversion
+convert = PresetConversion(src='hk', dst='cn', with_phrase=False)  # change to `dst='tw'` for Taiwan mode
+print(convert('盆地並不會永久被水覆蓋，而是反覆蒸發循環。'))
+# 盆地并不会永久被水覆盖，而是反复蒸发循环。
+```
+
+轉換用詞 With phrase conversion:
+
+```python
+from StarCC import PresetConversion
+convert = PresetConversion(src='tw', dst='cn', with_phrase=True)
+print(convert('在搜尋欄位使用萬用字元。'))
+# 在搜索字段使用通配符。
 ```
 
 ## 轉換模式一覽 Supported conversion modes

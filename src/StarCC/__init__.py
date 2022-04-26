@@ -107,8 +107,8 @@ class PresetConversion(Conversion):
                     'jp': Dicts.ST2JP,
                 }[dst])
             else:  # with_phrase
-                if src not in ('cn', 'tw'):
-                    raise ValueError(f'Phrase conversion for {src} is currently not supported')
+                if dst not in ('cn', 'tw'):
+                    raise ValueError(f'Phrase conversion for {dst} is currently not supported')
                 dicts_list.append({
                     'cn': Dicts.ST2CN,  # CN does not need to convert phrases
                     'tw': Dicts.ST2TWP,
