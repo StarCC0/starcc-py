@@ -71,4 +71,7 @@ convert('拥有 116 年历史')  # Wrong: 擁有 116 年曆史
 - `cn`: Simplified Chinese (Mainland China)
 - `hk`: Traditional Chinese (Hong Kong)
 - `tw`: Traditional Chinese (Taiwan)
+- `cnt`: Traditional Chinese (Mainland China)
 - `jp`: Japanese Shinjitai
+
+The support of `cnt` is currently experimental.

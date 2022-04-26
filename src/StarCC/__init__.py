@@ -97,9 +97,9 @@ class PresetConversion(Conversion):
         from Simplified to Traditional, this option has no effect.
         '''
 
-        if src not in ('st', 'cn', 'hk', 'tw', 'jp'):
+        if src not in ('st', 'cn', 'hk', 'tw', 'cnt', 'jp'):
             raise ValueError(f'Invalid src value: {src}')
-        if dst not in ('st', 'cn', 'hk', 'tw', 'jp'):
+        if dst not in ('st', 'cn', 'hk', 'tw', 'cnt', 'jp'):
             raise ValueError(f'Invalid dst value: {dst}')
         assert src != dst
 
@@ -112,6 +112,7 @@ class PresetConversion(Conversion):
                     'cn': Dicts.CN2ST,
                     'hk': Dicts.HK2ST,
                     'tw': Dicts.TW2ST,
+                    'cnt': Dicts.CNT2ST,
                     'jp': Dicts.JP2ST,
                 }[src])
             else:  # with_phrase
@@ -134,6 +135,7 @@ class PresetConversion(Conversion):
                     'cn': Dicts.ST2CN,
                     'hk': Dicts.ST2HK,
                     'tw': Dicts.ST2TW,
+                    'cnt': Dicts.ST2CNT,
                     'jp': Dicts.ST2JP,
                 }[dst])
             else:  # with_phrase
